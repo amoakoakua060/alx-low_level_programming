@@ -1,6 +1,19 @@
 #include "main.h"
 
 /**
+ * get_len - find the length of s
+ * @s: char
+ * Return: returns int
+ */
+int get_len(char *s)
+{
+	if ((*s) == '\0')
+		return (0);
+
+	return (1 + get_len(s + 1));
+}
+
+/**
  * has_ast - asteriks
  * @a: char
  *
@@ -65,46 +78,6 @@ char *get_last_char(char *a, char b, char *c)
 }
 
 /**
- * check_equality - checks if equal
- * @a: char
- * @b: char
- * Return: returns int
- */
-int check_equality(char *a,  char *b)
-{
-	if (*a != *b && *(b - 1) != '*' && *b != '*' && *(b + 1) != '\0')
-		return (0);
-	else if (*a == '\0' && *b == '*' && *(b + 1) == '\0')
-		return (1);
-	else if (*a == *b && *a == '\0')
-		return (1);
-	else if (*b != '\0' && *(b + 1) != '*' && *a == '\0')
-		return (0);
-	else if (*b == '*' && *(b + 1) == '\0')
-		return (1);
-
-	if (*b == '*' && *(b + 1) != '\0' &&  *(b + 2) == '*')
-	{
-
-		return (check_equality(a, b + 1));
-	}
-	else if (*b == '*')
-	{
-		b = get_after_ast(b + 1);
-		a = get_last_char(a, *b, a);
-
-		if (*a == '\0' && !(*b))
-			return (1);
-
-		return (check_equality(a, b));
-	}
-	else
-	{
-		return (check_equality(a + 1, b + 1));
-	}
-}
-
-/**
  * wildcmp - comparing to strings
  * @s1: pointer to string
  * @s2: pointer to string
@@ -112,13 +85,8 @@ int check_equality(char *a,  char *b)
  */
 int wildcmp(char *s1, char *s2)
 {
-	int l1 = 0, l2 = 0;
+	int l1 = get_len(s1), l2 = get_len(s2);
 	int h_ast = has_ast(s2);
-
-	while (s1[l1] != '\0')
-		l1++;
-	while (s2[l2] != '\0')
-		l2++;
 
 	if (!h_ast && l1 != l2)
 		return (0);
@@ -126,5 +94,31 @@ int wildcmp(char *s1, char *s2)
 	if (h_ast == l2)
 		return (1);
 
-	return (check_equality(s1, s2));
+	if (s1 != s2 && s2 - 1 != '*' && s2 != '*' && s2 + 1 != '\0')
+		return (0);
+	else if (s1 == '\0' && s2 == '*' && s2 + 1 == '\0')
+		return (1);
+	else if (s1 == s2 && s1 == '\0')
+		return (1);
+	else if (s2 != '\0' && s2 + 1 != '*' && s1 == '\0')
+		return (0);
+	else if (s2 == '*' && s2 + 1 == '\0')
+		return (1);
+
+	if (s2 == '*' && s2 + 1 != '\0' &&  s2 + 2 == '*')
+
+		return (wildcmp(s1, s2 + 1));
+	else if (s2 == '*')
+	{
+		s2 = get_after_ast(b + 1);
+		s1 = get_last_char(a, *b, a);
+
+		if (s1 == '\0' && !s2)
+			return (1);
+
+		return (wildcmp(s1, s2));
+	}
+	else
+		return (wildcmp(s1 + 1, s2 + 1));
+	/* return (wildcmp(s1, s2)); */
 }
