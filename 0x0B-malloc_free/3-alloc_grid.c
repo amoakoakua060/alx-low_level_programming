@@ -35,6 +35,7 @@ int **alloc_grid(int width, int height)
 			*(q_ptr + j) = 0;
 
 		*(ptr + i) = q_ptr;
+		i++;
 	}
 
 	return (ptr);
