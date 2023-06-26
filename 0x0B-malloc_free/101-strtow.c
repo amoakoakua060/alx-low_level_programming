@@ -98,7 +98,7 @@ char **strtow(char *str)
 	if (a == NULL)
 		return (NULL);
 	i = 0;
-	for (i < len)
+	while (i < len)
 	{
 		if (str[i] != ' ')
 		{
