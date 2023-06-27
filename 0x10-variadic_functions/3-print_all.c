@@ -12,11 +12,11 @@
 void print_all(const char * const format, ...)
 {
 	va_list vl;
-	unsigned int i;
+	unsigned int i = 0;
 	char *s, *separator = ", ";
 
 	va_start(vl, format);
-	for (i = 0; format && format[i] != '\0'; i++)
+	while (format && format[i] != '\0')
 	{
 		if (format[i + 1] == '\0')
 			separator = "";
@@ -40,6 +40,7 @@ void print_all(const char * const format, ...)
 			default:
 				break;
 		}
+		i++;
 	}
 
 	printf("\n");
