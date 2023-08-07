@@ -1,44 +1,32 @@
 #include "main.h"
 
 /**
- * main - copies content into another file
- * @ac: number of arguments
- * @av: arrary of arguments as strings
+ * append_text_to_file - create and append to file
+ * @filename: name of file to read from
+ * @text_content: string to append into file
  *
- * Return: 0 (Success)
+ * Return: int
  */
-int main(int ac, char *av[])
+int append_text_to_file(const char *filename, char *text_content)
 {
-	int fd_from, fd_to;
-	ssize_t from, to;
-	char buffer[1024];
+	int fd, len = 0;
+	ssize_t check_write = 0;
 
-	if (ac != 3)
-	{
-		dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
-		exit(97);
-	}
-	fd_from = open(av[1], O_RDONLY);
-	fd_to = open(av[2], O_WRONLY | O_CREAT | O_TRUNC | O_APPEND, 0664);
-	while ((from = read(fd_from, buffer, 1024)))
-	{
-		if (fd_from == -1 || from == -1)
-		{
-			dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", av[1]);
-			exit(98);
-		}
-		to = write(fd_to, buffer, from);
-		if (fd_to == -1 || to == -1)
-		{
-			dprintf(STDERR_FILENO, "Error: Can't write to %s\n", av[2]);
-			exit(99);
-		}
-	}
-	from = close(fd_from);
-	to = close(fd_to);
-	if (from != -1 && to != -1)
-		return (0);
-	dprintf(STDERR_FILENO, "Error: Can't close fd %d\n",
-			from == -1 ? fd_from : fd_to);
-	exit(100);
+	if (filename == NULL)
+		return (-1);
+
+	fd = open(filename, O_WRONLY | O_APPEND);
+	if (fd == -1)
+		return (-1);
+
+	if (text_content != NULL)
+		while (text_content[len] != '\0')
+			len++;
+
+	check_write = write(fd, text_content, len);
+	if (check_write == -1)
+		return (-1);
+
+	close(fd);
+	return (1);
 }
