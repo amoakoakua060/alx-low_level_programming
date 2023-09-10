@@ -35,6 +35,23 @@ shash_table_t *shash_table_create(unsigned long int size)
 }
 
 /**
+* create_shash_node - create the shash node
+* @node: pointer to node to be created
+* @key: string
+* @value: string
+*/
+void create_shash_node(shash_node_t **node, const char *key, const char *value)
+{
+	(*node) = malloc(sizeof(shash_node_t));
+	if ((*node) == NULL)
+		return;
+	(*node)->key = strdup(key);
+	(*node)->value = strdup(value);
+	(*node)->sprev = NULL;
+	(*node)->snext = NULL;
+}
+
+/**
  * shash_table_set - adds element to a sorted hash table.
  * @ht: hash table.
  * @key: string
@@ -49,7 +66,6 @@ int shash_table_set(shash_table_t *ht, const char *key, const char *value)
 
 	if (ht == NULL || key == NULL || strlen(key) == 0 || value == NULL)
 		return (0);
-
 	index = key_index((const unsigned char *)key, ht->size);
 	tmp = ht->shead;
 	for (; tmp; tmp = tmp->snext)
@@ -59,13 +75,9 @@ int shash_table_set(shash_table_t *ht, const char *key, const char *value)
 			tmp->value = strdup(value);
 			return (1);
 		}
-	new_node = malloc(sizeof(shash_node_t));
+	create_shash_node(&new_node, key, value);
 	if (new_node == NULL)
 		return (0);
-	new_node->key = strdup(key);
-	new_node->value = strdup(value);
-	new_node->sprev = NULL;
-	new_node->snext = NULL;
 	new_node->next = ht->array[index];
 	ht->array[index] = new_node;
 	if (ht->shead == NULL)
@@ -73,8 +85,7 @@ int shash_table_set(shash_table_t *ht, const char *key, const char *value)
 	else if (strcmp(ht->shead->key, key) > 0)
 	{
 		new_node->snext = ht->shead;
-		ht->shead->sprev = new_node;
-		ht->shead = new_node;
+		ht->shead = ht->shead->sprev = new_node;
 	}
 	else
 	{
