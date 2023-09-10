@@ -26,10 +26,10 @@ hash_table_t *hash_table_create(unsigned long int size)
 		return (NULL);
 	}
 
-	while (i < size)
+	while (a < size)
 	{
-		hash_t->array[i] = NULL;
-		i++;
+		hash_t->array[a] = NULL;
+		a++;
 	}
 
 	return (hash_t);
